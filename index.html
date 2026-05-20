@@ -34,7 +34,7 @@
   --max: 1000px;
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: auto; }
 
 body {
   font-family: var(--sans);
@@ -1017,9 +1017,331 @@ footer {
   @media (max-width: 768px) {
     .hero-photo-wrap { display: none; }
   }
+
+  /* ══════════════════════════════════
+     ANIMATIONS PACK
+  ══════════════════════════════════ */
+
+  /* 1. PARTICLE CANVAS */
+  #particle-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+
+  /* 2. CUSTOM CURSOR */
+  * { cursor: none !important; }
+  #cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--cyan);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.05s, width 0.2s, height 0.2s, background 0.2s;
+    box-shadow: 0 0 10px var(--cyan), 0 0 20px rgba(0,212,255,0.4);
+  }
+  #cursor-ring {
+    position: fixed;
+    width: 32px; height: 32px;
+    border: 1px solid rgba(0,212,255,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9997;
+    transform: translate(-50%, -50%);
+    transition: transform 0.12s cubic-bezier(0.16,1,0.3,1),
+                width 0.2s, height 0.2s, border-color 0.2s, opacity 0.2s;
+  }
+  body:has(a:hover) #cursor,
+  body:has(button:hover) #cursor { width: 14px; height: 14px; background: var(--amber); box-shadow: 0 0 14px var(--amber); }
+  body:has(a:hover) #cursor-ring,
+  body:has(button:hover) #cursor-ring { width: 48px; height: 48px; border-color: var(--amber); opacity: 0.6; }
+
+  /* 3. HERO BOOT SEQUENCE */
+  #boot-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 9000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    transition: opacity 0.6s ease;
+  }
+  #boot-overlay.fade-out { opacity: 0; pointer-events: none; }
+  .boot-logo {
+    font-family: var(--display);
+    font-size: 4rem;
+    letter-spacing: 0.1em;
+    color: var(--cyan);
+    text-shadow: 0 0 30px rgba(0,212,255,0.5);
+  }
+  .boot-bar-track {
+    width: 280px; height: 2px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .boot-bar-fill {
+    height: 100%;
+    background: var(--cyan);
+    width: 0%;
+    box-shadow: 0 0 8px var(--cyan);
+    transition: width 0.05s linear;
+  }
+  .boot-text {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    min-height: 1em;
+  }
+
+  /* 4. FLOATING DATA TAGS */
+  .data-tag {
+    position: absolute;
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    color: rgba(0,212,255,0.25);
+    text-transform: uppercase;
+    pointer-events: none;
+    white-space: nowrap;
+    animation: float-tag 8s ease-in-out infinite;
+  }
+  @keyframes float-tag {
+    0%,100% { transform: translateY(0); opacity: 0.25; }
+    50%      { transform: translateY(-12px); opacity: 0.5; }
+  }
+
+  /* 5. SECTION DIVIDERS animated */
+  .section-divider {
+    width: 100%; height: 1px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .section-divider::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -30%;
+    width: 30%; height: 100%;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    animation: divider-sweep 4s ease-in-out infinite;
+  }
+  @keyframes divider-sweep {
+    0%   { left: -30%; opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { left: 130%; opacity: 0; }
+  }
+
+  /* 6. SKILL ITEMS — stagger fill bar */
+  .skill-item { position: relative; overflow: hidden; }
+  .skill-item .skill-bar {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0%;
+    background: var(--cyan-dim);
+    transition: width 1s cubic-bezier(0.16,1,0.3,1);
+    z-index: 0;
+  }
+  .skill-item span { position: relative; z-index: 1; }
+  .skill-item.bar-loaded .skill-bar { width: 100%; }
+
+  /* 7. COUNTER NUMBERS */
+  .stat-num { transition: text-shadow 0.3s; }
+  .stat-num.counting { text-shadow: 0 0 20px var(--cyan), 0 0 40px rgba(0,212,255,0.3); }
+
+  /* 8. PROJECT CARD corner accents */
+  .project-card .corner {
+    position: absolute;
+    width: 12px; height: 12px;
+    border-color: rgba(0,212,255,0.2);
+    border-style: solid;
+    transition: border-color 0.3s, width 0.3s, height 0.3s;
+  }
+  .project-card:hover .corner { border-color: var(--cyan); width: 18px; height: 18px; }
+  .corner.tl { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
+  .corner.br { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+
+  /* 9. TEXT SCRAMBLE */
+  .scramble { display: inline; }
+
+  /* 10. AURORA glow behind hero photo */
+  .hero-aurora {
+    position: absolute;
+    right: -60px;
+    bottom: -60px;
+    width: 500px; height: 500px;
+    background: radial-gradient(ellipse at 60% 60%,
+      rgba(0,212,255,0.07) 0%,
+      rgba(0,82,255,0.04) 40%,
+      transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: aurora-pulse 6s ease-in-out infinite;
+  }
+  @keyframes aurora-pulse {
+    0%,100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+    33%      { transform: scale(1.1) rotate(3deg); opacity: 1; }
+    66%      { transform: scale(0.95) rotate(-2deg); opacity: 0.7; }
+  }
+
+  /* 11. NAV progress bar */
+  #read-progress {
+    position: fixed;
+    top: 56px; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--amber));
+    z-index: 600;
+    width: 0%;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 6px var(--cyan);
+  }
+
+  /* 12. TIMELINE item hover glow */
+  .timeline-item {
+    transition: background 0.3s;
+    border-radius: 2px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+  .timeline-item:hover { background: rgba(0,212,255,0.03); }
+
+  /* 13. CONTACT form field focus glow */
+  .form-group input:focus,
+  .form-group textarea:focus {
+    box-shadow: 0 0 0 1px var(--cyan), 0 0 16px rgba(0,212,255,0.15);
+  }
+
+  /* ══ 14. ABOUT NAV CLICK — section flash & highlight ══ */
+  @keyframes about-flash {
+    0%   { background: rgba(0,212,255,0.0); }
+    15%  { background: rgba(0,212,255,0.07); }
+    40%  { background: rgba(0,212,255,0.04); }
+    100% { background: rgba(0,212,255,0.0); }
+  }
+  #about.about-activated {
+    animation: about-flash 1.2s ease forwards;
+  }
+
+  /* section title glows on about-activate */
+  @keyframes title-glow {
+    0%   { text-shadow: none; }
+    30%  { text-shadow: 0 0 30px rgba(0,212,255,0.5), 0 0 60px rgba(0,212,255,0.2); }
+    100% { text-shadow: none; }
+  }
+  #about.about-activated .section-title {
+    animation: title-glow 1.4s ease forwards;
+  }
+
+  /* ══ 15. NAV LINK RIPPLE ══ */
+  .nav-links a {
+    overflow: hidden;
+  }
+  .nav-ripple {
+    position: absolute;
+    border-radius: 50%;
+    width: 6px; height: 6px;
+    background: var(--cyan);
+    opacity: 0.6;
+    transform: scale(0);
+    pointer-events: none;
+    animation: nav-ripple-anim 0.55s ease-out forwards;
+  }
+  @keyframes nav-ripple-anim {
+    to { transform: scale(14); opacity: 0; }
+  }
+
+  /* ══ 16. HERO CTA BUTTON — active press ══ */
+  .btn-primary:active  { transform: translateY(1px) scale(0.98); }
+  .btn-ghost:active    { transform: translateY(1px) scale(0.98); }
+
+  /* ══ 17. HERO CTA — pulse ring on load ══ */
+  @keyframes btn-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(0,212,255,0.45); }
+    70%  { box-shadow: 0 0 0 14px rgba(0,212,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(0,212,255,0); }
+  }
+  .btn-primary {
+    animation: btn-pulse 2.2s ease 2.5s 3;
+  }
+
+  /* ══ 18. SKILL ITEM — shake on click ══ */
+  @keyframes skill-ping {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(1.04) translateX(3px); }
+    60%  { transform: scale(0.97) translateX(-2px); }
+    100% { transform: scale(1) translateX(0); }
+  }
+  .skill-item.pinged { animation: skill-ping 0.35s ease; }
+
+  /* ══ 19. ABOUT section — border scan on activate ══ */
+  #about { position: relative; }
+  #about::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -2.5rem; right: -2.5rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    transform: scaleX(0);
+    transition: transform 0s;
+    opacity: 0;
+  }
+  #about.about-activated::before {
+    transform: scaleX(1);
+    opacity: 1;
+    transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.1s;
+  }
+
+  /* ══ 20. NAV ACTIVE highlight ══ */
+  .nav-links a.nav-active {
+    color: var(--cyan) !important;
+  }
+  .nav-links a.nav-active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 1px;
+    background: var(--cyan);
+    box-shadow: 0 0 6px var(--cyan);
+    animation: nav-underline-in 0.3s ease forwards;
+  }
+  @keyframes nav-underline-in {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
 </style>
 </head>
 <body>
+
+<!-- BOOT OVERLAY -->
+<div id="boot-overlay">
+  <div class="boot-logo">CPL</div>
+  <div class="boot-bar-track"><div class="boot-bar-fill" id="boot-bar-fill"></div></div>
+  <div class="boot-text" id="boot-text"></div>
+</div>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- READ PROGRESS -->
+<div id="read-progress"></div>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="particle-canvas"></canvas>
+
 
 <!-- NAV -->
 <nav>
@@ -1040,6 +1362,7 @@ footer {
       <span></span><span></span><span></span>
     </div>
     <div class="hero-corner tl"></div>
+    <div class="hero-aurora"></div>
     <div class="hero-corner br"></div>
 
     <div class="hero-main-row">
@@ -1065,11 +1388,11 @@ footer {
       <div class="hero-divider"></div>
       <div class="hero-stats">
         <div class="stat-item">
-          <div class="stat-num">5<span>+</span></div>
+          <div class="stat-num" data-val="5" data-suf="+">5<span>+</span></div>
           <div class="stat-label">Years Active</div>
         </div>
         <div class="stat-item">
-          <div class="stat-num">50<span>k+</span></div>
+          <div class="stat-num" data-val="50" data-suf="k+">50<span>k+</span></div>
           <div class="stat-label">Users Served</div>
         </div>
       </div>
@@ -1122,18 +1445,18 @@ footer {
         <div class="skills-panel">
           <div class="skills-inner">
             <div class="skills-list">
-              <div class="skill-item">TypeScript</div>
-              <div class="skill-item">React</div>
-              <div class="skill-item">Node.js</div>
-              <div class="skill-item">Python</div>
-              <div class="skill-item">PostgreSQL</div>
-              <div class="skill-item">Redis</div>
-              <div class="skill-item">AWS / GCP</div>
-              <div class="skill-item">Docker</div>
-              <div class="skill-item">GraphQL</div>
-              <div class="skill-item">REST APIs</div>
-              <div class="skill-item">CI/CD</div>
-              <div class="skill-item">Terraform</div>
+              <div class="skill-item"><div class="skill-bar"></div><span>TypeScript</span></div>
+              <div class="skill-item"><div class="skill-bar"></div><span>React</span></div>
+              <div class="skill-item"><div class="skill-bar"></div><span>Node.js</span></div>
+              <div class="skill-item"><div class="skill-bar"></div><span>Python</span></div>
+              <div class="skill-item"><div class="skill-bar"></div><span>PostgreSQL</span></div>
+              <div class="skill-item"><div class="skill-bar"></div><span>Redis</span></div>
+              <div class="skill-item"><div class="skill-bar"></div><span>AWS / GCP</span></div>
+              <div class="skill-item"><div class="skill-bar"></div><span>Docker</span></div>
+              <div class="skill-item"><div class="skill-bar"></div><span>GraphQL</span></div>
+              <div class="skill-item"><div class="skill-bar"></div><span>REST APIs</span></div>
+              <div class="skill-item"><div class="skill-bar"></div><span>CI/CD</span></div>
+              <div class="skill-item"><div class="skill-bar"></div><span>Terraform</span></div>
             </div>
           </div>
         </div>
@@ -1412,5 +1735,284 @@ async function sendMessage(btn) {
   }
 }
 </script>
+
+<script>
+/* ══ BOOT SEQUENCE ══ */
+(function() {
+  const overlay = document.getElementById('boot-overlay');
+  const fill    = document.getElementById('boot-bar-fill');
+  const txt     = document.getElementById('boot-text');
+  const lines   = [
+    'Initializing system…',
+    'Loading assets…',
+    'Compiling portfolio…',
+    'Establishing connection…',
+    'Ready.',
+  ];
+  let pct = 0, lineIdx = 0;
+  txt.textContent = lines[0];
+  const iv = setInterval(() => {
+    pct += Math.random() * 18 + 5;
+    if (pct >= 100) { pct = 100; clearInterval(iv); }
+    fill.style.width = pct + '%';
+    const ni = Math.floor((pct / 100) * (lines.length - 1));
+    if (ni !== lineIdx) { lineIdx = ni; txt.textContent = lines[lineIdx]; }
+    if (pct === 100) {
+      txt.textContent = 'Ready.';
+      setTimeout(() => {
+        overlay.classList.add('fade-out');
+        setTimeout(() => overlay.remove(), 700);
+      }, 400);
+    }
+  }, 80);
+})();
+
+/* ══ CUSTOM CURSOR ══ */
+const cur  = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = window.innerWidth/2, my = window.innerHeight/2;
+let rx = mx, ry = my;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+(function animCursor() {
+  rx += (mx - rx) * 0.18;
+  ry += (my - ry) * 0.18;
+  cur.style.left  = mx + 'px';
+  cur.style.top   = my + 'px';
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animCursor);
+})();
+document.addEventListener('mousedown', () => { cur.style.transform = 'translate(-50%,-50%) scale(0.6)'; });
+document.addEventListener('mouseup',   () => { cur.style.transform = 'translate(-50%,-50%) scale(1)'; });
+
+/* ══ READ PROGRESS BAR ══ */
+const prog = document.getElementById('read-progress');
+window.addEventListener('scroll', () => {
+  const s = document.documentElement;
+  const pct = (s.scrollTop / (s.scrollHeight - s.clientHeight)) * 100;
+  prog.style.width = pct + '%';
+}, { passive: true });
+
+/* ══ PARTICLES ══ */
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+class Particle {
+  constructor() { this.reset(true); }
+  reset(init) {
+    this.x  = Math.random() * W;
+    this.y  = init ? Math.random() * H : H + 10;
+    this.vx = (Math.random() - 0.5) * 0.3;
+    this.vy = -(Math.random() * 0.5 + 0.15);
+    this.r  = Math.random() * 1.2 + 0.3;
+    this.a  = Math.random() * 0.5 + 0.1;
+    this.type = Math.random() > 0.7 ? 'square' : 'circle';
+  }
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = this.a;
+    ctx.fillStyle = Math.random() > 0.85 ? '#ffb347' : '#00d4ff';
+    if (this.type === 'square') {
+      ctx.fillRect(this.x - this.r, this.y - this.r, this.r * 2, this.r * 2);
+    } else {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.y < -10) this.reset(false);
+  }
+}
+
+for (let i = 0; i < 90; i++) particles.push(new Particle());
+
+/* draw connecting lines between nearby particles */
+function drawLines() {
+  const maxD = 80;
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const d  = Math.sqrt(dx*dx + dy*dy);
+      if (d < maxD) {
+        ctx.save();
+        ctx.globalAlpha = (1 - d / maxD) * 0.08;
+        ctx.strokeStyle = '#00d4ff';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+  }
+}
+
+function animParticles() {
+  ctx.clearRect(0, 0, W, H);
+  drawLines();
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animParticles);
+}
+animParticles();
+
+/* ══ TEXT SCRAMBLE ══ */
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+function scramble(el, finalText, duration) {
+  let frame = 0, total = Math.ceil(duration / 30);
+  const iv = setInterval(() => {
+    el.textContent = finalText.split('').map((ch, i) => {
+      if (ch === ' ') return ' ';
+      if (frame / total > i / finalText.length) return ch;
+      return CHARS[Math.floor(Math.random() * CHARS.length)];
+    }).join('');
+    frame++;
+    if (frame > total) { el.textContent = finalText; clearInterval(iv); }
+  }, 30);
+}
+
+/* Apply scramble to section titles on reveal */
+const scrambleObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const orig = el.dataset.orig || el.textContent;
+      el.dataset.orig = orig;
+      scramble(el, orig, 800);
+      scrambleObs.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.section-tag').forEach(el => scrambleObs.observe(el));
+
+/* ══ COUNTER ANIMATION ══ */
+function animateCounter(el, target, suffix, duration) {
+  const start = performance.now();
+  el.classList.add('counting');
+  const iv = requestAnimationFrame(function tick(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - t, 4);
+    const val = Math.round(ease * target);
+    el.innerHTML = val + '<span>' + suffix + '</span>';
+    if (t < 1) requestAnimationFrame(tick);
+    else { el.classList.remove('counting'); }
+  });
+}
+
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      animateCounter(el, parseInt(el.dataset.val), el.dataset.suf, 1800);
+      counterObs.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-num[data-val]').forEach(el => counterObs.observe(el));
+
+/* ══ SKILL BARS ══ */
+const skillObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.skill-item').forEach((item, i) => {
+        setTimeout(() => item.classList.add('bar-loaded'), i * 60);
+      });
+      skillObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.skills-list').forEach(el => skillObs.observe(el));
+
+/* ══ PROJECT CARD CORNER ACCENTS (inject) ══ */
+document.querySelectorAll('.project-card').forEach(card => {
+  ['tl','br'].forEach(cls => {
+    const d = document.createElement('div');
+    d.className = 'corner ' + cls;
+    card.appendChild(d);
+  });
+});
+
+/* ══ FLOATING DATA TAGS ══ */
+const hero = document.getElementById('hero');
+const tags = ['// frontend','// backend','// devops','// typescript','// react','// node.js','// aws'];
+tags.forEach((t, i) => {
+  const el = document.createElement('div');
+  el.className = 'data-tag';
+  el.textContent = t;
+  el.style.cssText = `left:${10 + Math.random()*75}%;top:${20 + Math.random()*65}%;animation-delay:${i*1.1}s;animation-duration:${7 + Math.random()*4}s`;
+  hero.appendChild(el);
+});
+
+/* ══ ABOUT BUTTON CLICK ANIMATION ══ */
+const aboutLink = document.querySelector('.nav-links a[href="#about"]');
+const aboutSection = document.getElementById('about');
+
+function triggerAboutAnimation() {
+  if (!aboutSection) return;
+  aboutSection.classList.remove('about-activated');
+  void aboutSection.offsetWidth;
+  aboutSection.classList.add('about-activated');
+  setTimeout(() => aboutSection.classList.remove('about-activated'), 1400);
+}
+
+if (aboutLink) {
+  aboutLink.addEventListener('click', () => {
+    setTimeout(triggerAboutAnimation, 400);
+  });
+}
+
+/* ══ NAV LINK RIPPLE ══ */
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.style.position = 'relative';
+  link.addEventListener('click', function(e) {
+    const rect = this.getBoundingClientRect();
+    const ripple = document.createElement('span');
+    ripple.className = 'nav-ripple';
+    ripple.style.left = (e.clientX - rect.left - 3) + 'px';
+    ripple.style.top  = (e.clientY - rect.top - 3) + 'px';
+    this.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  });
+});
+
+/* ══ SKILL ITEM CLICK PING ══ */
+document.querySelectorAll('.skill-item').forEach(item => {
+  item.addEventListener('click', function() {
+    this.classList.remove('pinged');
+    void this.offsetWidth;
+    this.classList.add('pinged');
+    setTimeout(() => this.classList.remove('pinged'), 400);
+  });
+});
+
+/* ══ ACTIVE NAV HIGHLIGHT ON SCROLL ══ */
+const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+const sections = Array.from(navLinks).map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+
+const navObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('nav-active'));
+      const active = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('nav-active');
+    }
+  });
+}, { threshold: 0.35 });
+
+sections.forEach(s => navObs.observe(s));
+</script>
+
 </body>
 </html>
